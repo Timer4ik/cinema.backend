@@ -10,7 +10,13 @@ class FilmController extends Controller
 {
     public function index(Request $request)
     {
-        $genre = Genre::with($request->extend)->get();
+        $extends = $request->extend ?? [];
+        $genre = Genre::with($extends)->paginate(
+            $request->perPage ?? 5,
+            ['*'],
+            'page',
+            $request->page ?? 0
+        );
 
         return response()->json($genre);
     }
